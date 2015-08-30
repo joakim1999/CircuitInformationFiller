@@ -33,7 +33,7 @@ public class Resistor {
 		y+=g.getFontMetrics().getHeight();
 		g.drawString("I=" + (power==-1?"?":power + "A") , bound.x + 3, y);
 		y+=g.getFontMetrics().getHeight();
-		g.drawString("R=" + (resistance==-1?"?":resistance + " Ohm") , bound.x + 3, y);
+		g.drawString("R=" + (resistance==-1?"?":resistance + "\u2126") , bound.x + 3, y);
 	}
 	
 	public void setName(String name){
