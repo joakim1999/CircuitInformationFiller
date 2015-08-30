@@ -250,6 +250,6 @@ public class Main extends JPanel{
 		y += g.getFontMetrics().getHeight();
 		g.drawString("I=" + (power==-1?"?":power + "A"), x, y);
 		y += g.getFontMetrics().getHeight();
-		g.drawString("R=" + (resistance==-1?"?":resistance + " Ohm"), x, y);
+		g.drawString("R=" + (resistance==-1?"?":resistance + "\u2126"), x, y);
 	}
 }
