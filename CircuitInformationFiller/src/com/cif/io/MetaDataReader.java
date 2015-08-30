@@ -56,5 +56,6 @@ public class MetaDataReader {
 				}
 			}
 		}
+		br.close();
 	}
 }

@@ -36,6 +36,7 @@ public class MetaDataWriter{
 			bw.write("END");
 			bw.newLine();
 		}
+		bw.flush();
 		bw.close();
 	}
 }

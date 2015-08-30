@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -23,7 +24,9 @@ import com.cif.tile.Tile;
 import com.cif.tile.TileSystem;
 
 public class Main extends JPanel{
-	public static String circuitFileName = "Circuit";
+	public static String circuitFileName;
+	
+	public static String[] options;
 	
 	public static Tile startTile;
 	public static Tile endTile;
@@ -50,6 +53,7 @@ public class Main extends JPanel{
 	
 	public static void main(String[] args){
 		JFrame jf = new JFrame();
+		File circuitFile = null;
 		
 		JPanel panel = new Main();
 		jf.add(panel);
@@ -60,7 +64,12 @@ public class Main extends JPanel{
 		
 		jf.setVisible(true);
 		try {
-			Circuit c = new Circuit(new File(circuitFileName));
+			JFileChooser fc = new JFileChooser();
+			int returnVal = fc.showOpenDialog(jf);
+			if(returnVal == JFileChooser.APPROVE_OPTION){
+				Circuit c = new Circuit(circuitFile = fc.getSelectedFile());
+				circuitFileName = circuitFile.getName();
+			}
 			if(startTile == null){
 				JOptionPane.showMessageDialog(jf, "L was not specified in the circuit. This is required!", "ERROR", JOptionPane.ERROR_MESSAGE);
 				System.exit(0);
@@ -72,8 +81,9 @@ public class Main extends JPanel{
 			e.printStackTrace();
 		}
 		
-		File f = new File(circuitFileName + "_meta.meta");
+		File f = new File("metas/" + circuitFileName + "_meta.meta");
 		if(f.exists()){
+			options = new String[]{"Create Meta", "Delete Meta", "Reload"};
 			MetaDataReader reader = new MetaDataReader(f);
 			try {
 				reader.read();
@@ -83,22 +93,37 @@ public class Main extends JPanel{
 			unknowns = new Unknowns();
 			Calculator c = new Calculator();
 			c.calculate();
+		}else{
+			options = new String[]{"Create Meta", "Reload"};
 		}
 		
+		final File circuitFileCopy = circuitFile;
 		jf.addMouseListener(new MouseListener(){
 
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				if(JOptionPane.showConfirmDialog(jf,"Do you want to make a metadata file for this circuit?(This will overwrite previous data)", 
-						                            "Do you?", JOptionPane.YES_NO_OPTION)
-				   == 0){
-					MetaDataWriter writer = new MetaDataWriter(circuitFileName + "_meta.meta");
-					try {
-						writer.write();
-					} catch (IOException e) {
-						e.printStackTrace();
+				String value = (String) JOptionPane.showInputDialog(jf, "What do you want to do?", "What do you want to do?",
+						JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+				if(value != null){
+					if(value.equals("Create Meta")){
+						File directory;
+						if(!(directory = new File("metas")).exists()){
+							directory.mkdir();
+						}
+						MetaDataWriter writer = new MetaDataWriter("metas/" + circuitFileName + "_meta.meta");
+						try {
+							writer.write();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						System.out.println("MetaDataFile Created");
+					}else if(value.equals("Delete Meta")){
+						System.out.println("DELETING!");
+						new File("metas/" + circuitFileName + "_meta.meta").delete();
+					}else if(value.equals("Reload")){
+						reload(jf, circuitFileCopy);
 					}
-				};
+				}
 				
 			}
 
@@ -124,6 +149,11 @@ public class Main extends JPanel{
 
 			@Override
 			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
+					System.out.println("Escape was pressed");
+					System.out.println("Terminating the program");
+					System.exit(0);
+				}
 			}
 
 			@Override
@@ -145,6 +175,46 @@ public class Main extends JPanel{
 	
 	public Main(){
 		resistors = new ArrayList<Resistor>();
+	}
+	
+	public static void reload(JFrame jf, File circuitFile){
+		System.out.println("Reloading...");
+		voltage = -1;
+		power = -1;
+		resistance = -1;
+		resistors.clear();
+		tileSystem = new TileSystem(tilesX, tilesY, (jf.getWidth()-1)/tilesX, (jf.getHeight()-1)/tilesY);
+		try {
+			Circuit c = new Circuit(circuitFile);
+			if(startTile == null){
+				JOptionPane.showMessageDialog(jf, "L was not specified in the circuit. This is required!", "ERROR", JOptionPane.ERROR_MESSAGE);
+				System.exit(0);
+			}else if(endTile == null){
+				JOptionPane.showMessageDialog(jf, "N was not specified in the circuit. This is required!", "ERROR", JOptionPane.ERROR_MESSAGE);
+				System.exit(0);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		File f = new File("metas/" + circuitFileName + "_meta.meta");
+		if(f.exists()){
+			options = new String[]{"Create Meta", "Delete Meta", "Reload"};
+			MetaDataReader reader = new MetaDataReader(f);
+			try {
+				reader.read();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			unknowns = new Unknowns();
+			Calculator c = new Calculator();
+			c.calculate();
+		}else{
+			options = new String[]{"Create Meta", "Reload"};
+		}
+		System.out.println("Reloading complete");
+		
+		jf.paint(jf.getGraphics());
 	}
 	
 	public static void makeResistor(){

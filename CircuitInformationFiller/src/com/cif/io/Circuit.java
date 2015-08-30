@@ -12,7 +12,7 @@ import com.cif.main.Main;
 
 public class Circuit {
 	public Circuit(File f) throws IOException{
-		BufferedReader br = new BufferedReader(new FileReader("Circuit"));
+		BufferedReader br = new BufferedReader(new FileReader(f));
 		String line;
 		int lineIndex = 0;
 		while((line = br.readLine()) != null){
@@ -26,7 +26,7 @@ public class Circuit {
 			lineIndex++;
 		}
 		br.close();
-		br = new BufferedReader(new FileReader("Circuit"));
+		br = new BufferedReader(new FileReader(f));
 		Main.tilesUsedHeight = (int) (br.lines().count()-1);
 		br.close();
 	}
