@@ -84,13 +84,12 @@ public class Calculator {
 	
 	public boolean tryResistorsWithOhm(){
 		//Try to solve Resistors' "?" with the law of Ohm. Returns true if at least one was solved
-		boolean sucess = false;
 		for(Resistor r : Main.resistors){
 			if(tryResistorWithOhm(r)){
-				sucess = true;
+				return true;
 			}
 		}
-		return sucess;
+		return false;
 	}
 	
 	public boolean tryResistorWithOhm(Resistor r){
