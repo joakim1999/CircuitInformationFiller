@@ -19,6 +19,7 @@ import com.cif.calc.Unknowns;
 import com.cif.io.Circuit;
 import com.cif.io.MetaDataReader;
 import com.cif.io.MetaDataWriter;
+import com.cif.io.Parallel;
 import com.cif.io.Resistor;
 import com.cif.tile.Tile;
 import com.cif.tile.TileSystem;
@@ -34,6 +35,9 @@ public class Main extends JPanel{
 	public static ArrayList<Resistor> resistors;
 	public static Tile startTileResistor = null;
 	public static Tile endTileResistor = null;
+	
+	public static ArrayList<Parallel> parallels;
+	boolean parallelStarted = false;
 	
 	public static TileSystem tileSystem;
 	
@@ -175,6 +179,7 @@ public class Main extends JPanel{
 	
 	public Main(){
 		resistors = new ArrayList<Resistor>();
+		parallels = new ArrayList<Parallel>();
 	}
 	
 	public static void reload(JFrame jf, File circuitFile){
