@@ -37,7 +37,7 @@ public class Main extends JPanel{
 	public static Tile endTileResistor = null;
 	
 	public static ArrayList<Parallel> parallels;
-	boolean parallelStarted = false;
+	public static boolean parallelStarted = false;
 	
 	public static TileSystem tileSystem;
 	
@@ -188,6 +188,7 @@ public class Main extends JPanel{
 		power = -1;
 		resistance = -1;
 		resistors.clear();
+		parallels.clear();
 		tileSystem = new TileSystem(tilesX, tilesY, (jf.getWidth()-1)/tilesX, (jf.getHeight()-1)/tilesY);
 		try {
 			Circuit c = new Circuit(circuitFile);
@@ -226,7 +227,16 @@ public class Main extends JPanel{
 		if(startTileResistor != null && endTileResistor != null){
 			Resistor resistor = new Resistor(startTileResistor, endTileResistor);
 			resistor.setName("R" + (resistors.size() + 1));
-			resistors.add(resistor);
+			if(parallelStarted){
+				resistor.isInParallel = true;
+				Main.parallels.get(Main.parallels.size() - 1).addResistor(resistor);
+				resistors.add(resistor);
+				System.out.println(resistor.name + " is created");
+			}else{
+				resistors.add(resistor);
+			}
+			startTileResistor = null;
+			endTileResistor = null;
 		}else{
 			System.err.println("makeResistor() was called even though start and/or end was not defined.");
 		}
@@ -249,12 +259,40 @@ public class Main extends JPanel{
 		int endY = endTile.getY()*endTile.getHeight();
 		g.drawString("N", endX + (endTile.getWidth()/2) - (g.getFontMetrics().stringWidth("N")/2), endY + (endTile.getHeight()/2)+3);
 		
-		int x = tilesUsedWidth * (startTile.getWidth()/2);
+		int x = startTile.getX() * startTile.getWidth() + startTile.getWidth();
 		int y = tilesUsedHeight * (startTile.getHeight()/2);
 		g.drawString("U=" + (voltage==-1?"?":voltage + "V"), x, y);
 		y += g.getFontMetrics().getHeight();
 		g.drawString("I=" + (power==-1?"?":power + "A"), x, y);
 		y += g.getFontMetrics().getHeight();
 		g.drawString("R=" + (resistance==-1?"?":resistance + "\u2126"), x, y);
+		
+		for(Parallel p : parallels){
+			int maxX = 0;
+			int minY = 10000;
+			int maxY = 0;
+			for(Resistor r : p.resistors){
+				if(r.bound.getMinY() < minY){
+					minY = (int)r.bound.getMinY();
+				}
+				if(r.bound.getMaxX() > maxX){
+					maxX = (int)r.bound.getMaxX();
+				}
+				if(r.bound.getMaxY() > maxY){
+					maxY = (int)r.bound.getMaxY();
+				}
+			}
+			
+			x = maxX + startTile.getWidth();
+			y = minY + g.getFontMetrics().getHeight();
+			
+			g.drawString(p.name, x - (g.getFontMetrics().stringWidth(p.name)/2), y);
+			y+= g.getFontMetrics().getHeight();
+			g.drawString("U=" + (p.voltage==-1?"?":p.voltage + "V"), x - (g.getFontMetrics().stringWidth("U=" + (p.voltage==-1?"?":p.voltage + "V"))/2), y);
+			y+= g.getFontMetrics().getHeight();
+			g.drawString("I=" + (p.power==-1?"?":p.power + "A"), x - (g.getFontMetrics().stringWidth("I=" + (p.power==-1?"?":p.power + "A"))/2), y);
+			y+= g.getFontMetrics().getHeight();
+			g.drawString("R=" + (p.resistance==-1?"?":p.resistance + "\u2126"), x - (g.getFontMetrics().stringWidth("R=" + (p.resistance==-1?"?":p.resistance + "\u2126"))/2), y);
+		}
 	}
 }

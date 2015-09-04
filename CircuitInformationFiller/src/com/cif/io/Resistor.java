@@ -10,7 +10,7 @@ public class Resistor {
 	public float voltage = -1;
 	public float power = -1;
 	public float resistance = -1;
-	Rectangle bound;
+	public Rectangle bound;
 	public String name;
 	public boolean isInParallel;
 	

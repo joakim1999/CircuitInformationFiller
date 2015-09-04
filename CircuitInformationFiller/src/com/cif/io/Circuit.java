@@ -45,19 +45,26 @@ public class Circuit {
 		}else if(token == '|'){
 			Main.tileSystem.getTile(x, y).setIcon(CircuitIcons.LINE_VERTICAL);
 		}else if(token == '/'){
-			if(lastToken == '-'){
+			if(lastToken == '-' || lastToken == '+'){
 				Main.tileSystem.getTile(x, y).setIcon(CircuitIcons.LINE_LEFT_TOP);
 			}else{
 				Main.tileSystem.getTile(x, y).setIcon(CircuitIcons.LINE_BOTTOM_RIGHT);
 			}
 		}else if(token == '\\'){
-			if(lastToken == '-'){
+			if(lastToken == '-' || lastToken == '+'){
 				Main.tileSystem.getTile(x, y).setIcon(CircuitIcons.LINE_BOTTOM_LEFT);
 			}else{
 				Main.tileSystem.getTile(x, y).setIcon(CircuitIcons.LINE_RIGHT_TOP);
 			}
 		}else if(token == '+'){
 			Main.tileSystem.getTile(x, y).setIcon(CircuitIcons.MEETINGPOINT);
+			if(!Main.parallelStarted){
+				Main.parallelStarted = true;
+				Main.parallels.add(new Parallel());
+				Main.parallels.get(Main.parallels.size()-1).name = "P" + Main.parallels.size();
+			}else{
+				Main.parallelStarted = false;
+			}
 		}else if(token == 'R'){
 			Main.startTileResistor = Main.tileSystem.getTile(x, y);
 		}else if(token == 'E'){
@@ -65,6 +72,14 @@ public class Circuit {
 				Main.endTileResistor = Main.tileSystem.getTile(x, y);
 				Main.makeResistor();
 			}
+		}else if(token == 'V'){
+			Main.startTileResistor = Main.tileSystem.getTile(x, y);
+			Main.endTileResistor = Main.tileSystem.getTile(x, y+1);
+			Main.makeResistor();
+		}else if(token == 'H'){
+			Main.startTileResistor = Main.tileSystem.getTile(x, y);
+			Main.endTileResistor = Main.tileSystem.getTile(x+1, y);
+			Main.makeResistor();
 		}
 	}
 }

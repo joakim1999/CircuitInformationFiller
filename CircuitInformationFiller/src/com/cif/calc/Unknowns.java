@@ -1,14 +1,20 @@
 package com.cif.calc;
 
+import com.cif.io.Parallel;
 import com.cif.io.Resistor;
 import com.cif.main.Main;
 
 public class Unknowns {
 	public boolean mainCleared = false;
 	public Boolean[] resistorsCleared;
+	public Boolean[][] parallelsCleared;
 	
 	public Unknowns(){
 		resistorsCleared = new Boolean[Main.resistors.size()];
+		parallelsCleared = new Boolean[Main.parallels.size()][];
+		for(Parallel p : Main.parallels){
+			parallelsCleared[Main.parallels.indexOf(p)] = new Boolean[p.resistors.size()];
+		}
 	}
 	
 	public boolean isMainCleared(){
@@ -30,6 +36,15 @@ public class Unknowns {
 	public boolean isResistorsCleared(){
 		for(Resistor r : Main.resistors){
 			if(!this.isResistorCleared(r)){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public boolean isParallelCleared(Parallel p){
+		for(Boolean b : parallelsCleared[Main.parallels.indexOf(p)]){
+			if(b == null || !b){
 				return false;
 			}
 		}

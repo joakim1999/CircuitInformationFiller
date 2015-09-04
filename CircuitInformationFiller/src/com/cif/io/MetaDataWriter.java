@@ -36,6 +36,18 @@ public class MetaDataWriter{
 			bw.write("END");
 			bw.newLine();
 		}
+		for(Parallel p : Main.parallels){
+			bw.write(p.name);
+			bw.newLine();
+			bw.write("U=" + (p.voltage==-1?"":p.voltage));
+			bw.newLine();
+			bw.write("I=" + (p.power==-1?"":p.power));
+			bw.newLine();
+			bw.write("R=" + (p.resistance==-1?"":p.resistance));
+			bw.newLine();
+			bw.write("END");
+			bw.newLine();
+		}
 		bw.flush();
 		bw.close();
 	}
