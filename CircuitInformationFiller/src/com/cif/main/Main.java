@@ -283,8 +283,8 @@ public class Main extends JPanel{
 				}
 			}
 			
-			x = maxX + startTile.getWidth();
-			y = minY + g.getFontMetrics().getHeight();
+			x = maxX;
+			y = minY + (g.getFontMetrics().getHeight() * 6);
 			
 			g.drawString(p.name, x - (g.getFontMetrics().stringWidth(p.name)/2), y);
 			y+= g.getFontMetrics().getHeight();

@@ -15,7 +15,9 @@ public class Resistor {
 	public boolean isInParallel;
 	
 	public Resistor(Tile startTile, Tile endTile){
-		if(startTile.getX()<=endTile.getX() && startTile.getY()<=endTile.getY()){
+		if(startTile == null && endTile == null){
+			
+		}else if(startTile.getX()<=endTile.getX() && startTile.getY()<=endTile.getY()){
 			bound = new Rectangle(new Point(startTile.getX()*startTile.getWidth(), startTile.getY()*startTile.getHeight()));
 			bound.add(new Point(endTile.getX() * endTile.getWidth() + endTile.getWidth(),endTile.getY()*endTile.getHeight()+endTile.getHeight()));
 		}else{

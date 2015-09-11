@@ -80,6 +80,8 @@ public class Circuit {
 			Main.startTileResistor = Main.tileSystem.getTile(x, y);
 			Main.endTileResistor = Main.tileSystem.getTile(x+1, y);
 			Main.makeResistor();
+		}else if(token == 'C'){
+			Main.tileSystem.getTile(x, y).setIcon(CircuitIcons.MEETINGPOINT);
 		}
 	}
 }

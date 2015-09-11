@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
+import com.cif.calc.CommandedInfo;
 import com.cif.main.Main;
 
 public class MetaDataReader {
@@ -20,7 +21,26 @@ public class MetaDataReader {
 		Resistor currentResistor = null;
 		Parallel currentParallel = null;
 		while((line = br.readLine()) != null){
-			if(!line.contains("=")){
+			if(line.startsWith("!")){
+				String command = line.substring(1);
+				String[] tokens = command.split("&");
+				Resistor res1 = null;
+				Resistor res2 = null;
+				tokens[1] = tokens[1].split("=")[0];
+				System.out.println("Token0:" + tokens[0]);
+				System.out.println("Token1:" + tokens[1]);
+				for(Resistor r : Main.resistors){
+					if(r.name.equals(tokens[0])){
+						res1 = r;
+						System.out.println("Found " + tokens[0]);
+					}else if(r.name.equals(tokens[1])){
+						res2 = r;
+						System.out.println("Found " + tokens[1]);
+					}
+				}
+				CommandedInfo.add(res1.name + "+" + res2.name, (int)Math.pow(1/res1.resistance + 1/res2.resistance,-1));
+			}
+			else if(!line.contains("=")){
 				if(line.contains("R")){
 					currentResistor = Main.resistors.get(Integer.parseInt(line.substring(1)) - 1);
 				}else if(line.contains("P")){

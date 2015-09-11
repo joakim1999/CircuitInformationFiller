@@ -26,8 +26,12 @@ public class Unknowns {
 	
 	public boolean isResistorCleared(Resistor r){
 		int indexOf = Main.resistors.indexOf(r);
-		if(resistorsCleared[indexOf] == null || resistorsCleared[indexOf] == false){
-			return resistorsCleared[indexOf] = r.voltage != -1 && r.power != -1 && r.resistance != -1;
+		if(Main.resistors.contains(r)){
+			if(resistorsCleared[indexOf] == null || resistorsCleared[indexOf] == false){
+				return resistorsCleared[indexOf] = r.voltage != -1 && r.power != -1 && r.resistance != -1;
+			}
+		}else{
+			return r.voltage != -1 && r.power != -1 && r.resistance != -1;
 		}
 		System.out.println(r.name + " cleared");
 		return true;
@@ -43,9 +47,17 @@ public class Unknowns {
 	}
 	
 	public boolean isParallelCleared(Parallel p){
-		for(Boolean b : parallelsCleared[Main.parallels.indexOf(p)]){
-			if(b == null || !b){
-				return false;
+		if(Main.parallels.contains(p)){
+			for(Boolean b : parallelsCleared[Main.parallels.indexOf(p)]){
+				if(b == null || !b){
+					return false;
+				}
+			}
+		}else{
+			for(Resistor r : p.resistors){
+				if(!this.isResistorCleared(r)){
+					return false;
+				}
 			}
 		}
 		return true;
